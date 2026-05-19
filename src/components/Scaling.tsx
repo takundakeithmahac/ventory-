@@ -1,4 +1,4 @@
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import type { SKU, PortfolioSummary } from '../types';
 
 interface Props {
@@ -107,7 +107,7 @@ export default function Scaling({ skus, summary }: Props) {
             <XAxis dataKey="month" tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
             <YAxis hide />
             <Tooltip
-              formatter={(v: number) => [`$${(v / 1000).toFixed(0)}K`, '']}
+              formatter={(v) => [`$${(Number(v) / 1000).toFixed(0)}K`, '']}
               contentStyle={{ fontSize: 11, borderRadius: 8, border: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}
             />
             <Area type="monotone" dataKey="revenue" stroke="#1a56db" strokeWidth={2} fill="url(#revGrad)" dot={false} />

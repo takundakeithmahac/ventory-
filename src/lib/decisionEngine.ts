@@ -104,9 +104,9 @@ function urgencyFromBucketAndDays(bucket: BucketType, days: number): UrgencyLeve
 }
 
 const BUCKET_HEADLINE: Record<BucketType, (sku: SKU, days: number) => string> = {
-  acceleration: (s, d) => `Reorder ${calcReorderQty(s)} units by ${reorderDeadline(s)}`,
-  stabilization: (_, d) => `${d} days of stock — monitor or boost`,
-  erosion: (s) => `Margin eroding — correct or phase out`,
+  acceleration: (s, _d) => `Reorder ${calcReorderQty(s)} units by ${reorderDeadline(s)}`,
+  stabilization: (_s, d) => `${d} days of stock — monitor or boost`,
+  erosion: (_s) => `Margin eroding — correct or phase out`,
   risk_monetization: (s) => `$${(s.stockLevel * s.unitCost / 1000).toFixed(0)}K trapped — liquidate now`,
   leakage: (s) => `${(s.returnRate * 100).toFixed(0)}% return rate — flag issue`,
   end_of_life: (s) => `${s.ageDays}d old — end-of-life recovery`,
@@ -151,7 +151,7 @@ export function runDecisionEngine(skus: SKU[]): SKU[] {
 // ── Generate Daily Decision Feed ──────────────────────────────────────────
 export function generateDecisionFeed(skus: SKU[]): DailyDecision[] {
   return skus
-    .filter((s) => s.bucket !== 'hold')
+    .filter((s) => s.bucket !== undefined)
     .sort((a, b) => {
       const order: Record<UrgencyLevel, number> = {
         urgent: 0,
