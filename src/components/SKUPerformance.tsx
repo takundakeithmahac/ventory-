@@ -24,18 +24,18 @@ function SKUDetailModal({ sku, onClose }: { sku: SKU; onClose: () => void }) {
   const m = BUCKET_META[sku.bucket!];
   return (
     <div
-      className="fixed inset-0 bg-black/50 z-50 flex items-end"
+      className="fixed inset-0 bg-black/70 z-50 flex items-end"
       onClick={onClose}
     >
       <div
-        className="bg-white w-full max-w-md mx-auto rounded-t-2xl p-5 max-h-[85vh] overflow-y-auto"
+        className="bg-[#0f172a] border-t border-slate-800 w-full max-w-md mx-auto rounded-t-2xl p-5 max-h-[85vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-10 h-1 bg-slate-300 rounded-full mx-auto mb-4" />
+        <div className="w-10 h-1 bg-slate-700 rounded-full mx-auto mb-4" />
         <div className="flex items-start justify-between mb-3">
           <div>
-            <h2 className="font-bold text-slate-900">{sku.name}</h2>
-            <p className="text-xs text-slate-500">{sku.sku} · {sku.variant}</p>
+            <h2 className="font-bold text-white">{sku.name}</h2>
+            <p className="text-xs text-slate-400">{sku.sku} · {sku.variant}</p>
           </div>
           <span
             className="text-xs font-semibold px-2 py-1 rounded-full"
@@ -57,18 +57,18 @@ function SKUDetailModal({ sku, onClose }: { sku: SKU; onClose: () => void }) {
             { label: 'Reorder Point', value: `${sku.reorderPoint} units` },
             { label: 'Unit Cost', value: `$${sku.unitCost}` },
           ].map(({ label, value }) => (
-            <div key={label} className="bg-slate-50 rounded-lg p-2.5">
+            <div key={label} className="bg-slate-800 rounded-lg p-2.5">
               <p className="text-[10px] text-slate-500">{label}</p>
-              <p className="text-sm font-semibold text-slate-800 mt-0.5">{value}</p>
+              <p className="text-sm font-semibold text-white mt-0.5">{value}</p>
             </div>
           ))}
         </div>
 
         {/* Sales trend bar */}
-        <div className="bg-slate-50 rounded-lg p-3 mb-3">
-          <p className="text-xs text-slate-500 mb-2">Sales velocity trend</p>
+        <div className="bg-slate-800 rounded-lg p-3 mb-3">
+          <p className="text-xs text-slate-400 mb-2">Sales velocity trend</p>
           <div className="flex items-center gap-2">
-            <div className="flex-1 bg-slate-200 rounded-full h-2">
+            <div className="flex-1 bg-slate-700 rounded-full h-2">
               <div
                 className="h-2 rounded-full"
                 style={{
@@ -84,16 +84,16 @@ function SKUDetailModal({ sku, onClose }: { sku: SKU; onClose: () => void }) {
         </div>
 
         {/* Decision note */}
-        <div className="border border-slate-200 rounded-lg p-3">
+        <div className="border border-slate-700 bg-slate-800/50 rounded-lg p-3">
           <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">
             Ventory Recommendation
           </p>
-          <p className="text-sm text-slate-700 leading-relaxed">{sku.decisionNote}</p>
+          <p className="text-sm text-slate-300 leading-relaxed">{sku.decisionNote}</p>
         </div>
 
         <button
           onClick={onClose}
-          className="w-full mt-4 py-2.5 bg-[#0f172a] text-white rounded-xl text-sm font-semibold"
+          className="w-full mt-4 py-2.5 bg-[#1a56db] text-white rounded-xl text-sm font-semibold"
         >
           Close
         </button>
@@ -119,37 +119,37 @@ export default function SKUPerformance({ skus, summary }: Props) {
   return (
     <div className="px-4 pt-4">
       {/* Header */}
-      <div className="mb-4">
-        <p className="text-xs text-slate-500 uppercase tracking-wider">Portfolio Health</p>
-        <h1 className="text-xl font-bold text-slate-900 mt-0.5">SKU Performance</h1>
+      <div className="mb-5">
+        <p className="text-[10px] text-slate-600 uppercase tracking-[0.15em] mb-1">Portfolio Health</p>
+        <h1 className="text-xl font-bold text-white">SKU Performance</h1>
       </div>
 
       {/* Summary strip */}
       <div className="flex gap-2 mb-4">
-        <div className="flex-1 bg-[#0f172a] rounded-xl p-3 text-center">
+        <div className="flex-1 bg-[#0f172a] border border-slate-800 rounded-2xl p-3 text-center">
           <p className="text-2xl font-bold text-white">{summary.totalSKUs}</p>
-          <p className="text-[10px] text-slate-400">Total SKUs</p>
+          <p className="text-[10px] text-slate-500 uppercase tracking-wide">SKUs</p>
         </div>
-        <div className="flex-1 bg-red-500 rounded-xl p-3 text-center">
-          <p className="text-2xl font-bold text-white">{summary.urgent}</p>
-          <p className="text-[10px] text-red-100">Urgent</p>
+        <div className="flex-1 bg-red-500/10 border border-red-500/20 rounded-2xl p-3 text-center">
+          <p className="text-2xl font-bold text-red-400">{summary.urgent}</p>
+          <p className="text-[10px] text-red-500/70 uppercase tracking-wide">Urgent</p>
         </div>
-        <div className="flex-1 bg-amber-500 rounded-xl p-3 text-center">
-          <p className="text-2xl font-bold text-white">${(summary.capitalAtRisk / 1000).toFixed(0)}K</p>
-          <p className="text-[10px] text-amber-100">At Risk</p>
+        <div className="flex-1 bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3 text-center">
+          <p className="text-2xl font-bold text-amber-400">${(summary.capitalAtRisk / 1000).toFixed(0)}K</p>
+          <p className="text-[10px] text-amber-500/70 uppercase tracking-wide">At Risk</p>
         </div>
       </div>
 
       {/* Bar chart */}
-      <div className="bg-white rounded-xl border border-slate-200 p-3 mb-4">
-        <p className="text-xs font-semibold text-slate-600 mb-2">Six-Bucket Classifier</p>
+      <div className="bg-[#0f172a] rounded-2xl border border-slate-800 p-3 mb-4">
+        <p className="text-xs font-semibold text-slate-400 mb-2">Six-Bucket Classifier</p>
         <ResponsiveContainer width="100%" height={120}>
           <BarChart data={chartData} barCategoryGap="20%">
-            <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="name" tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} />
             <YAxis hide />
             <Tooltip
-              contentStyle={{ fontSize: 11, borderRadius: 8, border: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}
-              cursor={{ fill: '#f1f5f9' }}
+              contentStyle={{ fontSize: 11, borderRadius: 8, border: '1px solid #1e293b', background: '#0f172a', color: '#fff' }}
+              cursor={{ fill: '#1e293b' }}
             />
             <Bar dataKey="count" radius={[4, 4, 0, 0]}>
               {chartData.map((entry, i) => (
@@ -166,8 +166,8 @@ export default function SKUPerformance({ skus, summary }: Props) {
           onClick={() => setSelectedBucket(null)}
           className={`shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
             selectedBucket === null
-              ? 'bg-[#0f172a] text-white'
-              : 'bg-slate-100 text-slate-600'
+              ? 'bg-[#1a56db] text-white'
+              : 'bg-slate-800 text-slate-400 hover:text-slate-200'
           }`}
         >
           All ({skus.length})
@@ -201,11 +201,11 @@ export default function SKUPerformance({ skus, summary }: Props) {
             <button
               key={sku.id}
               onClick={() => setSelectedSKU(sku)}
-              className="bg-white rounded-xl border border-slate-200 p-3 text-left hover:border-slate-300 transition-colors"
+              className="bg-[#0f172a] rounded-2xl border border-slate-800 p-3 text-left hover:border-slate-700 transition-colors"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm text-slate-800 truncate">{sku.name}</p>
+                  <p className="font-semibold text-sm text-white truncate">{sku.name}</p>
                   <p className="text-xs text-slate-500 mt-0.5">{sku.sku} · {sku.variant}</p>
                 </div>
                 <div className="flex flex-col items-end gap-1 shrink-0">
@@ -218,7 +218,7 @@ export default function SKUPerformance({ skus, summary }: Props) {
                   <span className="text-[10px] text-slate-400">{m.action}</span>
                 </div>
               </div>
-              <div className="flex gap-3 mt-2 text-xs text-slate-500">
+              <div className="flex gap-3 mt-2 text-xs text-slate-500 border-t border-slate-800 pt-2">
                 <span>{sku.daysOfStock}d stock</span>
                 <span>{(sku.margin * 100).toFixed(0)}% margin</span>
                 <span className={sku.salesTrend >= 0 ? 'text-emerald-600' : 'text-red-500'}>

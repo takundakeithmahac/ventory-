@@ -7,7 +7,7 @@
 
 body {
   margin: 0;
-  background-color: #f1f5f9;
+  background-color: #080e1e;
   font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -17,28 +17,94 @@ body {
   min-height: 100svh;
 }
 
-.decision-card {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+/* ── Tab transition ───────────────────────────────────────────── */
+@keyframes tabFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tab-enter {
+  animation: tabFadeIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
+/* ── Card entrance (stagger via inline delay) ────────────────── */
+@keyframes cardSlideUp {
+  from { opacity: 0; transform: translateY(14px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.card-enter {
+  animation: cardSlideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Decision card press ─────────────────────────────────────── */
+.decision-card {
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  will-change: transform;
+}
 .decision-card:active {
   transform: scale(0.98);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ── Toast ───────────────────────────────────────────────────── */
+@keyframes toastSlideDown {
+  from { opacity: 0; transform: translateY(-16px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.toast-enter {
+  animation: toastSlideDown 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-.fade-in {
-  animation: fadeIn 0.3s ease forwards;
-}
-
-@keyframes pulse-dot {
+/* ── Pulse dot (status indicator) ───────────────────────────── */
+@keyframes pulseDot {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  50%       { opacity: 0.3; }
+}
+.pulse-dot {
+  animation: pulseDot 2s ease-in-out infinite;
 }
 
-.pulse-dot {
-  animation: pulse-dot 1.8s ease-in-out infinite;
+/* ── Urgent ring pulse ───────────────────────────────────────── */
+@keyframes urgentRing {
+  0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+  70%  { box-shadow: 0 0 0 5px rgba(239,68,68,0); }
+  100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+}
+.urgent-ring {
+  animation: urgentRing 2.2s ease-out infinite;
+}
+
+/* ── Skeleton shimmer ────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #1e293b 25%, #263244 50%, #1e293b 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s infinite;
+  border-radius: 10px;
+}
+
+/* ── Floating orbs (auth bg) ─────────────────────────────────── */
+@keyframes orb1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(30px, -20px) scale(1.08); }
+}
+@keyframes orb2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%       { transform: translate(-20px, 30px) scale(1.05); }
+}
+.orb-1 { animation: orb1 8s ease-in-out infinite; }
+.orb-2 { animation: orb2 11s ease-in-out infinite; }
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar         { width: 3px; height: 3px; }
+::-webkit-scrollbar-track   { background: transparent; }
+::-webkit-scrollbar-thumb   { background: #1e293b; border-radius: 2px; }
+
+/* ── Swipe card ──────────────────────────────────────────────── */
+.swipe-card {
+  transition: transform 0.08s linear, opacity 0.08s linear;
+}
+.swipe-card.snapping {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
 }

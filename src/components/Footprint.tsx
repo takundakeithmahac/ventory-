@@ -36,24 +36,24 @@ export default function Footprint({ skus, summary }: Props) {
 
   return (
     <div className="px-4 pt-4 pb-4">
-      <div className="mb-4">
-        <p className="text-xs text-slate-500 uppercase tracking-wider">Network Overview</p>
-        <h1 className="text-xl font-bold text-slate-900 mt-0.5">Supply Footprint</h1>
+      <div className="mb-5">
+        <p className="text-[10px] text-slate-600 uppercase tracking-[0.15em] mb-1">Network Overview</p>
+        <h1 className="text-xl font-bold text-white">Supply Footprint</h1>
       </div>
 
       {/* Stats strip */}
       <div className="grid grid-cols-3 gap-2 mb-4">
-        <div className="bg-[#0f172a] rounded-xl p-3 text-center">
+        <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-3 text-center">
           <p className="text-xl font-bold text-white">{totalSuppliers}</p>
-          <p className="text-[10px] text-slate-400">Suppliers</p>
+          <p className="text-[10px] text-slate-500 uppercase tracking-wide">Suppliers</p>
         </div>
-        <div className="bg-[#1a56db] rounded-xl p-3 text-center">
-          <p className="text-xl font-bold text-white">{inTransitUnits}</p>
-          <p className="text-[10px] text-blue-200">In Transit</p>
+        <div className="bg-[#1a56db]/15 border border-[#1a56db]/25 rounded-2xl p-3 text-center">
+          <p className="text-xl font-bold text-blue-400">{inTransitUnits}</p>
+          <p className="text-[10px] text-blue-500/70 uppercase tracking-wide">In Transit</p>
         </div>
-        <div className="bg-emerald-600 rounded-xl p-3 text-center">
-          <p className="text-xl font-bold text-white">{activeSkus}</p>
-          <p className="text-[10px] text-emerald-100">Low Stock</p>
+        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-3 text-center">
+          <p className="text-xl font-bold text-emerald-400">{activeSkus}</p>
+          <p className="text-[10px] text-emerald-500/70 uppercase tracking-wide">Low Stock</p>
         </div>
       </div>
 
@@ -96,15 +96,15 @@ export default function Footprint({ skus, summary }: Props) {
         <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Warehouses & Fulfillment</p>
         <div className="flex flex-col gap-2">
           {WAREHOUSES.map((w) => (
-            <div key={w.name} className="bg-white rounded-xl border border-slate-200 p-3 flex items-center gap-3">
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-base ${w.active ? 'bg-[#dbeafe]' : 'bg-slate-100'}`}>
+            <div key={w.name} className="bg-[#0f172a] rounded-2xl border border-slate-800 p-3 flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-base ${w.active ? 'bg-blue-500/15' : 'bg-slate-800'}`}>
                 {w.active ? '🏭' : '🚧'}
               </div>
               <div className="flex-1">
-                <p className="text-sm font-semibold text-slate-800">{w.name}</p>
+                <p className="text-sm font-semibold text-white">{w.name}</p>
                 <p className="text-xs text-slate-500">{w.city}</p>
               </div>
-              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${w.active ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${w.active ? 'bg-emerald-500/15 text-emerald-400' : 'bg-slate-800 text-slate-500'}`}>
                 {w.active ? 'Active' : 'Planned'}
               </span>
             </div>
@@ -119,17 +119,17 @@ export default function Footprint({ skus, summary }: Props) {
           {SUPPLIERS.map((s) => {
             const entry = supplierMap.get(s.name) ?? { count: 0, urgent: false };
             return (
-              <div key={s.name} className="bg-white rounded-xl border border-slate-200 p-3 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-base">
+              <div key={s.name} className="bg-[#0f172a] rounded-2xl border border-slate-800 p-3 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-base">
                   🏗
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 truncate">{s.name}</p>
+                  <p className="text-sm font-semibold text-white truncate">{s.name}</p>
                   <p className="text-xs text-slate-500">{s.city} · {s.type}</p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm font-bold text-slate-800">{entry.count}</p>
-                  <p className="text-[10px] text-slate-400">SKUs</p>
+                  <p className="text-sm font-bold text-white">{entry.count}</p>
+                  <p className="text-[10px] text-slate-500">SKUs</p>
                 </div>
                 {entry.urgent && (
                   <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
@@ -141,9 +141,9 @@ export default function Footprint({ skus, summary }: Props) {
       </div>
 
       {/* Free capital opportunities */}
-      <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
-        <p className="text-xs font-semibold text-amber-700 uppercase tracking-wider mb-1">Free Capital Opportunities</p>
-        <p className="text-sm text-amber-800 leading-relaxed">
+      <div className="mt-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4">
+        <p className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1">Free Capital Opportunities</p>
+        <p className="text-sm text-amber-200/70 leading-relaxed">
           ${(summary.capitalAtRisk / 1000).toFixed(0)}K tied up in slow movers.
           Consolidating Risk Monetization SKUs into a single liquidation event could free{' '}
           <span className="font-bold">${(summary.capitalAtRisk * 0.6 / 1000).toFixed(0)}K–${(summary.capitalAtRisk * 0.8 / 1000).toFixed(0)}K</span>{' '}
