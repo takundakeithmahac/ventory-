@@ -1,0 +1,186 @@
+import type { SKU } from '../types';
+
+export const MOCK_SKUS: SKU[] = [
+  // ── ACCELERATION (high velocity, high margin) ──────────────────────────
+  {
+    id: '1', name: 'Oversized Cargo Tee', sku: 'SKU-47', category: 'Tops',
+    variant: 'Black · XL', stockLevel: 34, inTransit: 0,
+    dailySales: 6.2, weeklySales: 43, monthlySales: 186, salesTrend: 0.22,
+    unitCost: 18, sellingPrice: 58, margin: 0.69, returnRate: 0.04,
+    ageDays: 45, leadTimeDays: 14, orderCost: 120, supplierName: 'Delta Apparel Co.',
+  },
+  {
+    id: '2', name: 'Washed Hoodie', sku: 'SKU-12', category: 'Tops',
+    variant: 'Cargo Short · Black', stockLevel: 8, inTransit: 0,
+    dailySales: 4.8, weeklySales: 34, monthlySales: 144, salesTrend: 0.31,
+    unitCost: 28, sellingPrice: 98, margin: 0.71, returnRate: 0.03,
+    ageDays: 30, leadTimeDays: 21, orderCost: 150, supplierName: 'Pacific Knit',
+  },
+  {
+    id: '3', name: 'Ripstop Cargo Short', sku: 'SKU-22', category: 'Bottoms',
+    variant: 'Olive · 32', stockLevel: 22, inTransit: 48,
+    dailySales: 3.9, weeklySales: 27, monthlySales: 117, salesTrend: 0.18,
+    unitCost: 22, sellingPrice: 72, margin: 0.69, returnRate: 0.05,
+    ageDays: 60, leadTimeDays: 14, orderCost: 110, supplierName: 'Delta Apparel Co.',
+  },
+  {
+    id: '4', name: 'Graphic Long Sleeve', sku: 'SKU-08', category: 'Tops',
+    variant: 'Cream · M', stockLevel: 55, inTransit: 0,
+    dailySales: 3.4, weeklySales: 24, monthlySales: 102, salesTrend: 0.09,
+    unitCost: 20, sellingPrice: 64, margin: 0.69, returnRate: 0.04,
+    ageDays: 75, leadTimeDays: 14, orderCost: 110, supplierName: 'Pacific Knit',
+  },
+  // ── STABILIZATION ──────────────────────────────────────────────────────
+  {
+    id: '5', name: 'Classic Crew Neck', sku: 'SKU-31', category: 'Tops',
+    variant: 'White · S', stockLevel: 120, inTransit: 0,
+    dailySales: 1.8, weeklySales: 13, monthlySales: 54, salesTrend: -0.05,
+    unitCost: 15, sellingPrice: 48, margin: 0.69, returnRate: 0.06,
+    ageDays: 90, leadTimeDays: 14, orderCost: 100, supplierName: 'GarmentPro',
+  },
+  {
+    id: '6', name: 'Track Jacket', sku: 'SKU-44', category: 'Outerwear',
+    variant: 'Navy · L', stockLevel: 88, inTransit: 0,
+    dailySales: 2.1, weeklySales: 15, monthlySales: 63, salesTrend: 0.02,
+    unitCost: 38, sellingPrice: 118, margin: 0.68, returnRate: 0.07,
+    ageDays: 55, leadTimeDays: 21, orderCost: 160, supplierName: 'Pacific Knit',
+  },
+  {
+    id: '7', name: 'Mesh Shorts', sku: 'SKU-19', category: 'Bottoms',
+    variant: 'Black · M', stockLevel: 200, inTransit: 0,
+    dailySales: 2.5, weeklySales: 18, monthlySales: 75, salesTrend: -0.03,
+    unitCost: 12, sellingPrice: 42, margin: 0.71, returnRate: 0.05,
+    ageDays: 80, leadTimeDays: 10, orderCost: 90, supplierName: 'GarmentPro',
+  },
+  {
+    id: '8', name: 'Bucket Hat', sku: 'SKU-55', category: 'Accessories',
+    variant: 'Tan · OS', stockLevel: 145, inTransit: 0,
+    dailySales: 1.4, weeklySales: 10, monthlySales: 42, salesTrend: 0.06,
+    unitCost: 9, sellingPrice: 34, margin: 0.74, returnRate: 0.03,
+    ageDays: 40, leadTimeDays: 10, orderCost: 80, supplierName: 'AccessoryCo',
+  },
+  {
+    id: '9', name: 'Puffer Vest', sku: 'SKU-61', category: 'Outerwear',
+    variant: 'Black · XL', stockLevel: 64, inTransit: 0,
+    dailySales: 1.9, weeklySales: 13, monthlySales: 57, salesTrend: 0.11,
+    unitCost: 34, sellingPrice: 108, margin: 0.69, returnRate: 0.08,
+    ageDays: 38, leadTimeDays: 21, orderCost: 150, supplierName: 'Pacific Knit',
+  },
+  // ── EROSION ────────────────────────────────────────────────────────────
+  {
+    id: '10', name: 'Slim Chino', sku: 'SKU-03', category: 'Bottoms',
+    variant: 'Khaki · 34', stockLevel: 180, inTransit: 0,
+    dailySales: 0.6, weeklySales: 4, monthlySales: 18, salesTrend: -0.28,
+    unitCost: 25, sellingPrice: 65, margin: 0.62, returnRate: 0.09,
+    ageDays: 160, leadTimeDays: 14, orderCost: 100, supplierName: 'GarmentPro',
+  },
+  {
+    id: '11', name: 'Zip-Up Hoodie', sku: 'SKU-17', category: 'Tops',
+    variant: 'Grey · M', stockLevel: 94, inTransit: 0,
+    dailySales: 0.8, weeklySales: 6, monthlySales: 24, salesTrend: -0.19,
+    unitCost: 32, sellingPrice: 88, margin: 0.64, returnRate: 0.08,
+    ageDays: 145, leadTimeDays: 21, orderCost: 140, supplierName: 'Pacific Knit',
+  },
+  {
+    id: '12', name: 'Polo Shirt', sku: 'SKU-27', category: 'Tops',
+    variant: 'White · L', stockLevel: 210, inTransit: 0,
+    dailySales: 0.5, weeklySales: 4, monthlySales: 15, salesTrend: -0.35,
+    unitCost: 18, sellingPrice: 55, margin: 0.67, returnRate: 0.1,
+    ageDays: 120, leadTimeDays: 14, orderCost: 90, supplierName: 'GarmentPro',
+  },
+  // ── RISK MONETIZATION ──────────────────────────────────────────────────
+  {
+    id: '13', name: 'Corduroy Jacket', sku: 'SKU-33', category: 'Outerwear',
+    variant: 'Brown · L', stockLevel: 240, inTransit: 0,
+    dailySales: 0.3, weeklySales: 2, monthlySales: 9, salesTrend: -0.45,
+    unitCost: 42, sellingPrice: 110, margin: 0.62, returnRate: 0.07,
+    ageDays: 210, leadTimeDays: 30, orderCost: 200, supplierName: 'WestCoast Mfg',
+  },
+  {
+    id: '14', name: 'Denim Jacket', sku: 'SKU-41', category: 'Outerwear',
+    variant: 'Raw · M', stockLevel: 185, inTransit: 0,
+    dailySales: 0.2, weeklySales: 1, monthlySales: 6, salesTrend: -0.52,
+    unitCost: 48, sellingPrice: 128, margin: 0.62, returnRate: 0.06,
+    ageDays: 195, leadTimeDays: 30, orderCost: 200, supplierName: 'WestCoast Mfg',
+  },
+  {
+    id: '15', name: 'Fleece Pullover', sku: 'SKU-38', category: 'Tops',
+    variant: 'Charcoal · S', stockLevel: 320, inTransit: 0,
+    dailySales: 0.4, weeklySales: 3, monthlySales: 12, salesTrend: -0.41,
+    unitCost: 29, sellingPrice: 78, margin: 0.63, returnRate: 0.08,
+    ageDays: 230, leadTimeDays: 21, orderCost: 130, supplierName: 'GarmentPro',
+  },
+  // ── LEAKAGE ────────────────────────────────────────────────────────────
+  {
+    id: '16', name: 'Canvas Sneaker', sku: 'SKU-52', category: 'Footwear',
+    variant: 'White · US 10', stockLevel: 110, inTransit: 0,
+    dailySales: 1.2, weeklySales: 8, monthlySales: 36, salesTrend: -0.14,
+    unitCost: 32, sellingPrice: 95, margin: 0.66, returnRate: 0.19,
+    ageDays: 80, leadTimeDays: 21, orderCost: 180, supplierName: 'FootworkCo',
+  },
+  {
+    id: '17', name: 'Nylon Bomber', sku: 'SKU-58', category: 'Outerwear',
+    variant: 'Olive · M', stockLevel: 78, inTransit: 0,
+    dailySales: 1.5, weeklySales: 11, monthlySales: 45, salesTrend: -0.08,
+    unitCost: 40, sellingPrice: 118, margin: 0.66, returnRate: 0.15,
+    ageDays: 55, leadTimeDays: 21, orderCost: 160, supplierName: 'Pacific Knit',
+  },
+  // ── END OF LIFE ────────────────────────────────────────────────────────
+  {
+    id: '18', name: 'Velour Tracksuit', sku: 'SKU-C', category: 'Sets',
+    variant: 'Burgundy · L', stockLevel: 95, inTransit: 0,
+    dailySales: 0.05, weeklySales: 0, monthlySales: 2, salesTrend: -0.72,
+    unitCost: 55, sellingPrice: 148, margin: 0.63, returnRate: 0.09,
+    ageDays: 380, leadTimeDays: 45, orderCost: 250, supplierName: 'LuxeApparel',
+  },
+  {
+    id: '19', name: 'Linen Trousers', sku: 'SKU-09', category: 'Bottoms',
+    variant: 'Cream · 30', stockLevel: 130, inTransit: 0,
+    dailySales: 0.08, weeklySales: 1, monthlySales: 2, salesTrend: -0.68,
+    unitCost: 30, sellingPrice: 82, margin: 0.63, returnRate: 0.1,
+    ageDays: 290, leadTimeDays: 30, orderCost: 130, supplierName: 'GarmentPro',
+  },
+  // ── MORE ACCELERATION & STABILIZATION ─────────────────────────────────
+  {
+    id: '20', name: 'Logo Cap', sku: 'SKU-71', category: 'Accessories',
+    variant: 'Black · OS', stockLevel: 18, inTransit: 0,
+    dailySales: 3.1, weeklySales: 22, monthlySales: 93, salesTrend: 0.27,
+    unitCost: 8, sellingPrice: 38, margin: 0.79, returnRate: 0.02,
+    ageDays: 20, leadTimeDays: 10, orderCost: 70, supplierName: 'AccessoryCo',
+  },
+  {
+    id: '21', name: 'Lightweight Parka', sku: 'SKU-74', category: 'Outerwear',
+    variant: 'Stone · M', stockLevel: 45, inTransit: 0,
+    dailySales: 2.8, weeklySales: 20, monthlySales: 84, salesTrend: 0.16,
+    unitCost: 52, sellingPrice: 165, margin: 0.68, returnRate: 0.05,
+    ageDays: 35, leadTimeDays: 28, orderCost: 220, supplierName: 'WestCoast Mfg',
+  },
+  {
+    id: '22', name: 'Ribbed Tank', sku: 'SKU-77', category: 'Tops',
+    variant: 'White · S', stockLevel: 280, inTransit: 0,
+    dailySales: 2.0, weeklySales: 14, monthlySales: 60, salesTrend: 0.04,
+    unitCost: 10, sellingPrice: 32, margin: 0.69, returnRate: 0.03,
+    ageDays: 50, leadTimeDays: 10, orderCost: 80, supplierName: 'GarmentPro',
+  },
+  {
+    id: '23', name: 'Utility Jogger', sku: 'SKU-80', category: 'Bottoms',
+    variant: 'Khaki · M', stockLevel: 15, inTransit: 60,
+    dailySales: 4.2, weeklySales: 29, monthlySales: 126, salesTrend: 0.33,
+    unitCost: 26, sellingPrice: 82, margin: 0.68, returnRate: 0.04,
+    ageDays: 28, leadTimeDays: 14, orderCost: 120, supplierName: 'Delta Apparel Co.',
+  },
+  {
+    id: '24', name: 'Snap-Back Cap', sku: 'SKU-83', category: 'Accessories',
+    variant: 'Camo · OS', stockLevel: 190, inTransit: 0,
+    dailySales: 1.1, weeklySales: 8, monthlySales: 33, salesTrend: 0.01,
+    unitCost: 7, sellingPrice: 28, margin: 0.75, returnRate: 0.02,
+    ageDays: 100, leadTimeDays: 10, orderCost: 70, supplierName: 'AccessoryCo',
+  },
+  {
+    id: '25', name: 'Cropped Hoodie', sku: 'SKU-86', category: 'Tops',
+    variant: 'Pink · S', stockLevel: 62, inTransit: 0,
+    dailySales: 2.3, weeklySales: 16, monthlySales: 69, salesTrend: 0.14,
+    unitCost: 24, sellingPrice: 78, margin: 0.69, returnRate: 0.06,
+    ageDays: 42, leadTimeDays: 14, orderCost: 110, supplierName: 'Pacific Knit',
+  },
+];
