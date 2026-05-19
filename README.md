@@ -83,7 +83,7 @@ Data        Shopify Products + Orders CSV import (client-side, no backend needed
 
 ### Run locally
 ```bash
-git clone https://github.com/takundamahachi/ventory.git
+git clone https://github.com/takundakeithmahac/ventory.git
 cd ventory
 npm install
 npm run dev
