@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { runDecisionEngine, generateDecisionFeed, buildPortfolioSummary } from './lib/decisionEngine';
 import { MOCK_SKUS } from './lib/mockData';
 import Layout from './components/Layout';
@@ -12,34 +12,71 @@ import type { DailyDecision, SKU } from './types';
 
 export type TabId = 'recommended' | 'footprint' | 'skuperf' | 'favorites' | 'scaling';
 
+function loadStorage<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveStorage(key: string, value: unknown) {
+  try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+}
+
 export default function App() {
-  const [rawSKUs, setRawSKUs] = useState<SKU[] | null>(null);
-  const [dataSource, setDataSource] = useState<'csv' | 'demo' | null>(null);
+  const [rawSKUs, setRawSKUs] = useState<SKU[] | null>(() =>
+    loadStorage<SKU[] | null>('ventory_skus', null)
+  );
+  const [dataSource, setDataSource] = useState<'csv' | 'demo' | null>(() =>
+    loadStorage<'csv' | 'demo' | null>('ventory_source', null)
+  );
   const [activeTab, setActiveTab] = useState<TabId>('recommended');
-  const [favoritedIds, setFavoritedIds] = useState<Set<string>>(new Set());
-  const [dismissedIds, setDismissedIds] = useState<Set<string>>(new Set());
+  const [favoritedIds, setFavoritedIds] = useState<Set<string>>(
+    () => new Set(loadStorage<string[]>('ventory_favorites', []))
+  );
+  const [dismissedIds, setDismissedIds] = useState<Set<string>>(
+    () => new Set(loadStorage<string[]>('ventory_dismissed', []))
+  );
+
+  // Persist to localStorage whenever state changes
+  useEffect(() => { saveStorage('ventory_skus', rawSKUs); }, [rawSKUs]);
+  useEffect(() => { saveStorage('ventory_source', dataSource); }, [dataSource]);
+  useEffect(() => { saveStorage('ventory_favorites', [...favoritedIds]); }, [favoritedIds]);
+  useEffect(() => { saveStorage('ventory_dismissed', [...dismissedIds]); }, [dismissedIds]);
 
   function handleData(skus: SKU[], source: 'csv' | 'demo') {
-    setRawSKUs(source === 'demo' ? MOCK_SKUS : skus);
+    const resolved = source === 'demo' ? MOCK_SKUS : skus;
+    setRawSKUs(resolved);
     setDataSource(source);
     setFavoritedIds(new Set());
     setDismissedIds(new Set());
     setActiveTab('recommended');
   }
 
-  const sourceSKUs = rawSKUs ?? [];
+  function handleReset() {
+    setDataSource(null);
+    setRawSKUs(null);
+    setFavoritedIds(new Set());
+    setDismissedIds(new Set());
+    localStorage.removeItem('ventory_skus');
+    localStorage.removeItem('ventory_source');
+    localStorage.removeItem('ventory_favorites');
+    localStorage.removeItem('ventory_dismissed');
+  }
 
+  const sourceSKUs = rawSKUs ?? [];
   const enrichedSKUs = useMemo(() => runDecisionEngine(sourceSKUs), [sourceSKUs]);
   const summary = useMemo(() => buildPortfolioSummary(enrichedSKUs), [enrichedSKUs]);
   const allDecisions = useMemo(() => generateDecisionFeed(enrichedSKUs), [enrichedSKUs]);
 
   const decisions: DailyDecision[] = useMemo(
-    () =>
-      allDecisions.map((d) => ({
-        ...d,
-        favorited: favoritedIds.has(d.id),
-        dismissed: dismissedIds.has(d.id),
-      })),
+    () => allDecisions.map((d) => ({
+      ...d,
+      favorited: favoritedIds.has(d.id),
+      dismissed: dismissedIds.has(d.id),
+    })),
     [allDecisions, favoritedIds, dismissedIds]
   );
 
@@ -59,7 +96,6 @@ export default function App() {
     setDismissedIds((prev) => new Set([...prev, id]));
   }
 
-  // Show onboarding until the user picks a data source
   if (!dataSource) {
     return <Onboarding onData={handleData} />;
   }
@@ -69,7 +105,7 @@ export default function App() {
       activeTab={activeTab}
       setActiveTab={setActiveTab}
       urgentCount={liveUrgentCount}
-      onReset={() => { setDataSource(null); setRawSKUs(null); }}
+      onReset={handleReset}
       brandName={dataSource === 'csv' ? 'Your Store' : 'Demo Store'}
     >
       {activeTab === 'recommended' && (
@@ -81,18 +117,10 @@ export default function App() {
           urgentCount={liveUrgentCount}
         />
       )}
-      {activeTab === 'skuperf' && (
-        <SKUPerformance skus={enrichedSKUs} summary={summary} />
-      )}
-      {activeTab === 'footprint' && (
-        <Footprint skus={enrichedSKUs} summary={summary} />
-      )}
-      {activeTab === 'favorites' && (
-        <Favorites decisions={favoritedDecisions} onFavorite={toggleFavorite} />
-      )}
-      {activeTab === 'scaling' && (
-        <Scaling skus={enrichedSKUs} summary={summary} />
-      )}
+      {activeTab === 'skuperf' && <SKUPerformance skus={enrichedSKUs} summary={summary} />}
+      {activeTab === 'footprint' && <Footprint skus={enrichedSKUs} summary={summary} />}
+      {activeTab === 'favorites' && <Favorites decisions={favoritedDecisions} onFavorite={toggleFavorite} />}
+      {activeTab === 'scaling' && <Scaling skus={enrichedSKUs} summary={summary} />}
     </Layout>
   );
 }
