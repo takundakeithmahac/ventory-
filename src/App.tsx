@@ -19,11 +19,18 @@ import type { DailyDecision, SKU } from './types';
 
 export type TabId = 'recommended' | 'footprint' | 'skuperf' | 'favorites' | 'scaling';
 
+// Safari private mode throws SecurityError on storage access — always wrap in try/catch
 function loadLocal<T>(key: string, fallback: T): T {
   try { const r = localStorage.getItem(key); return r ? JSON.parse(r) : fallback; } catch { return fallback; }
 }
 function saveLocal(key: string, v: unknown) {
   try { localStorage.setItem(key, JSON.stringify(v)); } catch {}
+}
+function sessionGet(key: string): string | null {
+  try { return sessionStorage.getItem(key); } catch { return null; }
+}
+function sessionSet(key: string, val: string) {
+  try { sessionStorage.setItem(key, val); } catch {}
 }
 
 function haptic(ms = 10) {
@@ -38,12 +45,13 @@ export default function App() {
   const { user, loading: authLoading } = useAuth();
   // Show landing on every fresh window/tab open; sessionStorage persists across
   // refreshes in the same tab so it won't flash on reload once you're in the app.
+  // Safari private mode throws on storage access — sessionGet/sessionSet guard that.
   const [showLanding, setShowLanding] = useState(
-    () => !sessionStorage.getItem('ventory_entered')
+    () => !sessionGet('ventory_entered')
   );
 
   function enterApp() {
-    sessionStorage.setItem('ventory_entered', '1');
+    sessionSet('ventory_entered', '1');
     setShowLanding(false);
   }
 
