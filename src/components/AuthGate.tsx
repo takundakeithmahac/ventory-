@@ -16,14 +16,31 @@ export default function AuthGate() {
     setLoading(true);
     setError(null);
     setSuccess(null);
-    const err = mode === 'signin'
-      ? await signIn(email, password)
-      : await signUp(email, password);
-    if (err) {
-      setError(err.message);
-    } else if (mode === 'signup') {
-      setSuccess('Account created! You can sign in now.');
-      setMode('signin');
+    try {
+      const err = mode === 'signin'
+        ? await signIn(email, password)
+        : await signUp(email, password);
+      if (err) {
+        // Supabase returns AuthError; network failures throw TypeError ("Load failed" in Safari)
+        const msg = err.message || String(err);
+        if (msg.toLowerCase().includes('load failed') || msg.toLowerCase().includes('failed to fetch') || msg.toLowerCase().includes('network')) {
+          setError('Connection error — check your internet and try again.');
+        } else if (msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('credentials')) {
+          setError('Invalid email or password.');
+        } else {
+          setError(msg);
+        }
+      } else if (mode === 'signup') {
+        setSuccess('Account created! You can sign in now.');
+        setMode('signin');
+      }
+    } catch (thrown: unknown) {
+      const msg = thrown instanceof Error ? thrown.message : String(thrown);
+      if (msg.toLowerCase().includes('load failed') || msg.toLowerCase().includes('failed to fetch') || msg.toLowerCase().includes('network')) {
+        setError('Connection error — check your internet and try again.');
+      } else {
+        setError('Something went wrong. Please try again.');
+      }
     }
     setLoading(false);
   }
