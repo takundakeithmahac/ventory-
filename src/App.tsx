@@ -5,6 +5,7 @@ import { saveSKUs, loadSKUs, saveDecisionAction, removeDecisionAction, loadDecis
 import Layout from './components/Layout';
 import Onboarding from './components/Onboarding';
 import AuthGate from './components/AuthGate';
+import LandingPage from './components/LandingPage';
 import RecommendedFeed from './components/RecommendedFeed';
 import SKUPerformance from './components/SKUPerformance';
 import Footprint from './components/Footprint';
@@ -35,6 +36,7 @@ function AnimatedTab({ id, children }: { id: string; children: ReactNode }) {
 
 export default function App() {
   const { user, loading: authLoading } = useAuth();
+  const [showAuth, setShowAuth] = useState(false);
 
   const [rawSKUs, setRawSKUs] = useState<SKU[] | null>(() => loadLocal('ventory_skus', null));
   const [dataSource, setDataSource] = useState<'csv' | 'demo' | null>(() => loadLocal('ventory_source', null));
@@ -149,7 +151,10 @@ export default function App() {
     );
   }
 
-  if (!user) return <><AuthGate /><ToastContainer /></>;
+  if (!user) {
+    if (!showAuth) return <LandingPage onGetStarted={() => setShowAuth(true)} />;
+    return <><AuthGate /><ToastContainer /></>;
+  }
   if (!dataSource) return <><Onboarding onData={handleData} /><ToastContainer /></>;
 
   const brandName = dataSource === 'csv'
