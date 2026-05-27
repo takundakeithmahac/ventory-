@@ -8,6 +8,7 @@ interface Props {
   urgentCount: number;
   children: ReactNode;
   onReset: () => void;
+  onShowLanding: () => void;
   brandName: string;
 }
 
@@ -77,7 +78,7 @@ const TABS: { id: TabId; label: string; Icon: React.FC<{ active: boolean }> }[] 
   { id: 'scaling',     label: 'Scaling',   Icon: IconScaling },
 ];
 
-export default function Layout({ activeTab, setActiveTab, urgentCount, children, onReset, brandName }: Props) {
+export default function Layout({ activeTab, setActiveTab, urgentCount, children, onReset, onShowLanding, brandName }: Props) {
   return (
     <div className="flex flex-col min-h-screen max-w-md mx-auto bg-[#080e1e] shadow-2xl relative">
       {/* Top bar with subtle gradient */}
@@ -85,7 +86,7 @@ export default function Layout({ activeTab, setActiveTab, urgentCount, children,
         className="flex items-center justify-between px-4 py-3 sticky top-0 z-20 border-b border-slate-800/40"
         style={{ background: 'linear-gradient(180deg, #080e1e 0%, rgba(8,14,30,0.96) 100%)', backdropFilter: 'blur(8px)' }}
       >
-        <button onClick={onReset} className="flex items-center active:opacity-70 transition-opacity">
+        <button onClick={onShowLanding} className="flex items-center active:opacity-70 transition-opacity">
           <VentoryLogo size={26} showWordmark wordmarkColor="text-white" />
         </button>
 

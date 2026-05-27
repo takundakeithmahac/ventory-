@@ -3,6 +3,7 @@ import VentoryLogo from './VentoryLogo';
 
 interface Props {
   onGetStarted: () => void;
+  isPreview?: boolean;
 }
 
 // ── Intersection observer hook ────────────────────────────────
@@ -308,7 +309,7 @@ function Section({ children, className = '' }: { children: React.ReactNode; clas
 }
 
 // ── Main LandingPage ──────────────────────────────────────────
-export default function LandingPage({ onGetStarted }: Props) {
+export default function LandingPage({ onGetStarted, isPreview = false }: Props) {
   function scrollTo(id: string) {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   }
@@ -330,14 +331,23 @@ export default function LandingPage({ onGetStarted }: Props) {
             ))}
           </div>
           <div className="flex items-center gap-3">
-            <button onClick={onGetStarted}
-              className="text-sm text-slate-300 hover:text-white transition-colors hidden sm:block">
-              Sign in
-            </button>
-            <button onClick={onGetStarted}
-              className="bg-[#1a56db] hover:bg-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all active:scale-95 shadow-lg shadow-blue-900/30">
-              Get Started →
-            </button>
+            {isPreview ? (
+              <button onClick={onGetStarted}
+                className="flex items-center gap-1.5 text-sm text-slate-300 hover:text-white transition-colors bg-slate-800/60 border border-slate-700/40 px-3.5 py-2 rounded-xl">
+                ← Back to app
+              </button>
+            ) : (
+              <>
+                <button onClick={onGetStarted}
+                  className="text-sm text-slate-300 hover:text-white transition-colors hidden sm:block">
+                  Sign in
+                </button>
+                <button onClick={onGetStarted}
+                  className="bg-[#1a56db] hover:bg-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all active:scale-95 shadow-lg shadow-blue-900/30">
+                  Get Started →
+                </button>
+              </>
+            )}
           </div>
         </div>
       </nav>
