@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useState, useRef, useEffect, type ReactNode } from 'react';
 import type { TabId } from '../App';
 import VentoryLogo from './VentoryLogo';
 
@@ -9,6 +9,7 @@ interface Props {
   children: ReactNode;
   onReset: () => void;
   onShowLanding: () => void;
+  onLogout: () => void;
   brandName: string;
 }
 
@@ -78,7 +79,19 @@ const TABS: { id: TabId; label: string; Icon: React.FC<{ active: boolean }> }[] 
   { id: 'scaling',     label: 'Scaling',   Icon: IconScaling },
 ];
 
-export default function Layout({ activeTab, setActiveTab, urgentCount, children, onReset, onShowLanding, brandName }: Props) {
+export default function Layout({ activeTab, setActiveTab, urgentCount, children, onReset, onShowLanding, onLogout, brandName }: Props) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    }
+    if (menuOpen) document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [menuOpen]);
+
   return (
     <div className="flex flex-col min-h-screen max-w-md mx-auto bg-[#080e1e] shadow-2xl relative">
       {/* Top bar with subtle gradient */}
@@ -95,16 +108,55 @@ export default function Layout({ activeTab, setActiveTab, urgentCount, children,
           <span className="text-[11px] text-slate-300 font-medium max-w-[80px] truncate">{brandName}</span>
         </div>
 
-        <button
-          onClick={onReset}
-          className="w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700/40 flex items-center justify-center transition-all active:scale-95"
-          title="Reset data"
-        >
-          <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-            <path d="M2 7c0 2.76 2.24 5 5 5s5-2.24 5-5-2.24-5-5-5" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M5 4L2 7l3 3" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
+        {/* Menu button */}
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setMenuOpen(v => !v)}
+            className="w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-slate-700/40 flex items-center justify-center transition-all active:scale-95"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="7" cy="2.5" r="1.2" fill="#94a3b8" />
+              <circle cx="7" cy="7" r="1.2" fill="#94a3b8" />
+              <circle cx="7" cy="11.5" r="1.2" fill="#94a3b8" />
+            </svg>
+          </button>
+
+          {menuOpen && (
+            <div className="absolute right-0 top-10 w-44 bg-[#0d1524] border border-slate-700/60 rounded-2xl shadow-2xl overflow-hidden z-50">
+              <button
+                onClick={() => { setMenuOpen(false); onShowLanding(); }}
+                className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-slate-300 hover:bg-slate-800/60 transition-colors text-left"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M7 1L1 5.5V13h4V9h4v4h4V5.5L7 1z" stroke="#94a3b8" strokeWidth="1.3" strokeLinejoin="round" />
+                </svg>
+                Home
+              </button>
+              <button
+                onClick={() => { setMenuOpen(false); onReset(); }}
+                className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-slate-300 hover:bg-slate-800/60 transition-colors text-left"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 7c0 2.76 2.24 5 5 5s5-2.24 5-5-2.24-5-5-5" stroke="#94a3b8" strokeWidth="1.3" strokeLinecap="round" />
+                  <path d="M5 4L2 7l3 3" stroke="#94a3b8" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                Reset data
+              </button>
+              <div className="h-px bg-slate-800 mx-3" />
+              <button
+                onClick={() => { setMenuOpen(false); onLogout(); }}
+                className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-red-400 hover:bg-red-500/8 transition-colors text-left"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M5 2H2a1 1 0 00-1 1v8a1 1 0 001 1h3" stroke="#f87171" strokeWidth="1.3" strokeLinecap="round" />
+                  <path d="M9.5 9.5L13 7l-3.5-2.5" stroke="#f87171" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M13 7H5" stroke="#f87171" strokeWidth="1.3" strokeLinecap="round" />
+                </svg>
+                Sign out
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Content */}

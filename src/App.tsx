@@ -42,7 +42,7 @@ function AnimatedTab({ id, children }: { id: string; children: ReactNode }) {
 }
 
 export default function App() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, signOut } = useAuth();
   // Show landing on every fresh window/tab open; sessionStorage persists across
   // refreshes in the same tab so it won't flash on reload once you're in the app.
   // Safari private mode throws on storage access — sessionGet/sessionSet guard that.
@@ -53,6 +53,13 @@ export default function App() {
   function enterApp() {
     sessionSet('ventory_entered', '1');
     setShowLanding(false);
+  }
+
+  async function handleLogout() {
+    await signOut();
+    clearAll();
+    sessionSet('ventory_entered', '');   // clear so landing shows on next open
+    setShowLanding(true);
   }
 
   const [rawSKUs, setRawSKUs] = useState<SKU[] | null>(() => loadLocal('ventory_skus', null));
@@ -199,6 +206,7 @@ export default function App() {
         urgentCount={liveUrgentCount}
         onReset={clearAll}
         onShowLanding={() => setShowLanding(true)}
+        onLogout={handleLogout}
         brandName={brandName}
       >
         <AnimatedTab id={activeTab}>
