@@ -36,8 +36,16 @@ function AnimatedTab({ id, children }: { id: string; children: ReactNode }) {
 
 export default function App() {
   const { user, loading: authLoading } = useAuth();
-  const [showAuth, setShowAuth] = useState(false);
-  const [showLanding, setShowLanding] = useState(false);
+  // Show landing on every fresh window/tab open; sessionStorage persists across
+  // refreshes in the same tab so it won't flash on reload once you're in the app.
+  const [showLanding, setShowLanding] = useState(
+    () => !sessionStorage.getItem('ventory_entered')
+  );
+
+  function enterApp() {
+    sessionStorage.setItem('ventory_entered', '1');
+    setShowLanding(false);
+  }
 
   const [rawSKUs, setRawSKUs] = useState<SKU[] | null>(() => loadLocal('ventory_skus', null));
   const [dataSource, setDataSource] = useState<'csv' | 'demo' | null>(() => loadLocal('ventory_source', null));
@@ -152,16 +160,23 @@ export default function App() {
     );
   }
 
+  // Landing page — shown on every fresh window/tab; logo tap re-shows it
+  if (showLanding) {
+    return (
+      <>
+        <LandingPage
+          onGetStarted={enterApp}
+          isPreview={!!user && !!dataSource}
+        />
+        <ToastContainer />
+      </>
+    );
+  }
+
   if (!user) {
-    if (!showAuth) return <LandingPage onGetStarted={() => setShowAuth(true)} />;
     return <><AuthGate /><ToastContainer /></>;
   }
   if (!dataSource) return <><Onboarding onData={handleData} /><ToastContainer /></>;
-
-  // Logged-in user previewing the landing page
-  if (showLanding) {
-    return <><LandingPage onGetStarted={() => setShowLanding(false)} isPreview /><ToastContainer /></>;
-  }
 
   const brandName = dataSource === 'csv'
     ? (user.email?.split('@')[0] ?? 'Your Store')

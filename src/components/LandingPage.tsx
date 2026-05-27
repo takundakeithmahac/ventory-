@@ -333,8 +333,8 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
           <div className="flex items-center gap-3">
             {isPreview ? (
               <button onClick={onGetStarted}
-                className="flex items-center gap-1.5 text-sm text-slate-300 hover:text-white transition-colors bg-slate-800/60 border border-slate-700/40 px-3.5 py-2 rounded-xl">
-                ← Back to app
+                className="bg-[#1a56db] hover:bg-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all active:scale-95 shadow-lg shadow-blue-900/30">
+                Open App →
               </button>
             ) : (
               <>
@@ -387,7 +387,7 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-10">
               <button onClick={onGetStarted}
                 className="bg-[#1a56db] hover:bg-blue-500 text-white font-bold px-7 py-3.5 rounded-xl text-base transition-all active:scale-[0.98] shadow-xl shadow-blue-900/40">
-                Get Started Free →
+                {isPreview ? 'Open App →' : 'Get Started Free →'}
               </button>
               <button onClick={() => scrollTo('demo')}
                 className="border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white font-semibold px-7 py-3.5 rounded-xl text-base transition-all">
@@ -613,7 +613,7 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
                   </ul>
                   <button onClick={onGetStarted}
                     className={`w-full py-3 rounded-xl font-semibold text-sm transition-all active:scale-[0.98] ${p.current ? 'bg-[#1a56db] text-white hover:bg-blue-500' : 'border border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white'}`}>
-                    Get started →
+                    {isPreview ? 'Open App →' : 'Get started →'}
                   </button>
                 </div>
               </Section>
@@ -635,7 +635,7 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
           </p>
           <button onClick={onGetStarted}
             className="bg-[#1a56db] hover:bg-blue-500 text-white font-bold px-10 py-4 rounded-2xl text-lg transition-all active:scale-[0.98] shadow-2xl shadow-blue-900/40 inline-block">
-            Start for Free →
+            {isPreview ? 'Open App →' : 'Start for Free →'}
           </button>
           <p className="text-slate-600 text-sm mt-5">No credit card required · Setup in 60 seconds · Cancel anytime</p>
         </Section>
