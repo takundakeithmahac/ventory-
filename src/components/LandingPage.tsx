@@ -622,6 +622,50 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
         </div>
       </section>
 
+      {/* ── Founder ── */}
+      <section className="py-20 px-5">
+        <Section className="max-w-2xl mx-auto">
+          <p className="text-xs text-[#1a56db] uppercase tracking-[0.2em] font-bold mb-3 text-center">Built by</p>
+          <div className="bg-[#0d1524] border border-slate-800 rounded-3xl p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            {/* Avatar */}
+            <div className="shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1a56db] to-[#6366f1] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-900/30">
+              TK
+            </div>
+            {/* Info */}
+            <div className="flex-1 text-center sm:text-left">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1">
+                <h3 className="text-white font-bold text-lg">Takunda Keith Mahachi</h3>
+                <span className="inline-flex items-center gap-1 bg-[#1a56db]/15 border border-[#1a56db]/25 text-blue-400 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                  CEO
+                </span>
+              </div>
+              <p className="text-slate-400 text-sm mb-4">Ex Cisco Systems Software Engineer</p>
+              <div className="flex flex-col sm:flex-row gap-3 text-sm">
+                <a
+                  href="mailto:takundakeithmahachi@gmail.com"
+                  className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <rect x="1" y="2.5" width="12" height="9" rx="1.5" stroke="#94a3b8" strokeWidth="1.2" />
+                    <path d="M1 4l6 4 6-4" stroke="#94a3b8" strokeWidth="1.2" strokeLinecap="round" />
+                  </svg>
+                  takundakeithmahachi@gmail.com
+                </a>
+                <a
+                  href="tel:+19193977832"
+                  className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                    <path d="M2 2.5A1.5 1.5 0 013.5 1h1a1 1 0 011 .8l.5 2.5a1 1 0 01-.3.9L4.8 6a8 8 0 003.2 3.2l.8-.9a1 1 0 01.9-.3l2.5.5a1 1 0 01.8 1V11A1.5 1.5 0 0111.5 12.5 9.5 9.5 0 012 2.5z" stroke="#94a3b8" strokeWidth="1.2" strokeLinejoin="round" />
+                  </svg>
+                  (919) 397-7832
+                </a>
+              </div>
+            </div>
+          </div>
+        </Section>
+      </section>
+
       {/* ── Final CTA ── */}
       <section className="py-24 px-5 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-[#1a56db] opacity-[0.08] rounded-full blur-[100px] orb-1 pointer-events-none" />
