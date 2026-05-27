@@ -628,8 +628,8 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
           <p className="text-xs text-[#1a56db] uppercase tracking-[0.2em] font-bold mb-3 text-center">Built by</p>
           <div className="bg-[#0d1524] border border-slate-800 rounded-3xl p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
             {/* Avatar */}
-            <div className="shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1a56db] to-[#6366f1] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-blue-900/30">
-              TK
+            <div className="shrink-0 w-20 h-20 rounded-2xl overflow-hidden shadow-lg shadow-blue-900/30 border border-slate-700/50">
+              <img src="/founder.jpg" alt="Takunda Keith Mahachi" className="w-full h-full object-cover object-top" />
             </div>
             {/* Info */}
             <div className="flex-1 text-center sm:text-left">
