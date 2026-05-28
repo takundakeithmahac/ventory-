@@ -12,7 +12,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
       return (
         <div style={{ minHeight: '100vh', background: '#080e1e', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
           <div style={{ textAlign: 'center', color: '#94a3b8' }}>
-            <img src="/logo.svg" alt="Ventory" width="52" height="52" style={{ margin: '0 auto 1rem', display: 'block' }} />
+            <img src="/logo.png" alt="Ventory" width="52" height="52" style={{ margin: '0 auto 1rem', display: 'block' }} />
             <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem', marginBottom: '0.5rem' }}>VENTORY</p>
             <p style={{ fontSize: '0.85rem', marginBottom: '1.5rem' }}>Something went wrong loading the app.</p>
             <button
