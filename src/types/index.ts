@@ -56,6 +56,17 @@ export interface SKU {
 
 export type ExecutionStatus = 'recommended' | 'approved' | 'dismissed';
 
+// ── Decision memory & outcome learning (spec §11) ──
+// Lifecycle: RECOMMENDATION → USER DECISION → EXECUTION → OUTCOME → LEARNING
+export type OutcomeRating = 'better' | 'expected' | 'worse';
+export type MemoryStage = 'approved' | 'executed' | 'measured';
+
+export interface DecisionOutcome {
+  stage: MemoryStage;         // where in the lifecycle this decision is
+  rating?: OutcomeRating;     // how the outcome compared with expectation
+  notedAt: string;            // ISO timestamp of last update
+}
+
 export interface DecisionAlternative {
   label: string;      // the alternative action
   tradeoff: string;   // why you might pick it / what you give up

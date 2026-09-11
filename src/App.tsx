@@ -16,7 +16,7 @@ import ToastContainer from './components/Toast';
 import VentoryLogo from './components/VentoryLogo';
 import { useAuth } from './hooks/useAuth';
 import { toast } from './lib/toast';
-import type { DailyDecision, SKU } from './types';
+import type { DailyDecision, SKU, DecisionOutcome, OutcomeRating } from './types';
 
 export type TabId = 'recommended' | 'footprint' | 'skuperf' | 'favorites' | 'scaling';
 
@@ -69,6 +69,10 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabId>('recommended');
   const [favoritedIds, setFavoritedIds] = useState<Set<string>>(() => new Set(loadLocal<string[]>('ventory_favorites', [])));
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(() => new Set(loadLocal<string[]>('ventory_dismissed', [])));
+  // Decision memory & outcomes (spec §11) — keyed by decision id
+  const [outcomes, setOutcomes] = useState<Record<string, DecisionOutcome>>(
+    () => loadLocal<Record<string, DecisionOutcome>>('ventory_outcomes', {})
+  );
   const [dbLoading, setDbLoading] = useState(false);
 
   // When user logs in — load their data from Supabase
@@ -93,6 +97,17 @@ export default function App() {
   useEffect(() => { saveLocal('ventory_source', dataSource); }, [dataSource]);
   useEffect(() => { saveLocal('ventory_favorites', [...favoritedIds]); }, [favoritedIds]);
   useEffect(() => { saveLocal('ventory_dismissed', [...dismissedIds]); }, [dismissedIds]);
+  useEffect(() => { saveLocal('ventory_outcomes', outcomes); }, [outcomes]);
+
+  // Advance a decision through its lifecycle: executed → measured (with a rating)
+  function setOutcomeStage(id: string, stage: 'executed' | 'measured', rating?: OutcomeRating) {
+    setOutcomes((prev) => ({
+      ...prev,
+      [id]: { stage, rating: rating ?? prev[id]?.rating, notedAt: new Date().toISOString() },
+    }));
+    if (stage === 'measured') { toast.show('Outcome logged — Ventory learns from this'); haptic(8); }
+    else { toast.show('Marked as executed', 'info'); }
+  }
 
   async function handleData(skus: SKU[], source: 'csv' | 'demo') {
     const resolved = source === 'demo' ? MOCK_SKUS : skus;
@@ -107,7 +122,8 @@ export default function App() {
   function clearAll() {
     setDataSource(null); setRawSKUs(null);
     setFavoritedIds(new Set()); setDismissedIds(new Set());
-    ['ventory_skus','ventory_source','ventory_favorites','ventory_dismissed']
+    setOutcomes({});
+    ['ventory_skus','ventory_source','ventory_favorites','ventory_dismissed','ventory_outcomes']
       .forEach((k) => localStorage.removeItem(k));
   }
 
@@ -223,9 +239,16 @@ export default function App() {
               brandName={brandName}
             />
           )}
-          {activeTab === 'skuperf' && <SKUPerformance skus={enrichedSKUs} summary={summary} />}
+          {activeTab === 'skuperf' && <SKUPerformance skus={enrichedSKUs} summary={summary} decisions={decisions} outcomes={outcomes} />}
           {activeTab === 'footprint' && <Footprint skus={enrichedSKUs} summary={summary} />}
-          {activeTab === 'favorites' && <Favorites decisions={favoritedDecisions} onFavorite={toggleFavorite} />}
+          {activeTab === 'favorites' && (
+            <Favorites
+              decisions={favoritedDecisions}
+              outcomes={outcomes}
+              onFavorite={toggleFavorite}
+              onSetOutcome={setOutcomeStage}
+            />
+          )}
           {activeTab === 'scaling' && <Scaling skus={enrichedSKUs} summary={summary} />}
         </AnimatedTab>
       </Layout>
