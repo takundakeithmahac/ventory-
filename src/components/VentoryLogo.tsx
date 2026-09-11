@@ -9,7 +9,7 @@ export default function VentoryLogo({ size = 36, showWordmark = false, wordmarkC
   return (
     <div className={`flex items-center gap-2.5 ${className}`}>
       <img
-        src="/logo.png"
+        src={`${import.meta.env.BASE_URL}logo.png`}
         alt="Ventory"
         width={size}
         height={size}

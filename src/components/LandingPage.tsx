@@ -708,7 +708,7 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
           <div className="bg-[#0d1524] border border-slate-800 rounded-3xl p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
             {/* Avatar */}
             <div className="shrink-0 w-20 h-20 rounded-2xl overflow-hidden shadow-lg shadow-blue-900/30 border border-slate-700/50">
-              <img src="/founder.jpg" alt="Takunda Keith Mahachi" className="w-full h-full object-cover object-top" />
+              <img src={`${import.meta.env.BASE_URL}founder.jpg`} alt="Takunda Keith Mahachi" className="w-full h-full object-cover object-top" />
             </div>
             {/* Info */}
             <div className="flex-1 text-center sm:text-left">
