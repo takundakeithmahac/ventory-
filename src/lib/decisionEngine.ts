@@ -172,6 +172,76 @@ function buildRiskIfIgnored(sku: SKU, bucket: BucketType, days: number): string 
   }
 }
 
+const BUCKET_OBJECTIVE: Record<BucketType, string> = {
+  acceleration:      'Maximize revenue on a proven winner',
+  stabilization:     'Hold service level while protecting margin',
+  erosion:           'Recover margin before it decays further',
+  risk_monetization: 'Free trapped cash and reduce holding risk',
+  leakage:           'Protect margin by fixing return leakage',
+  end_of_life:       'Minimize carrying cost on dead stock',
+};
+
+const BUCKET_PROBLEM: Record<BucketType, (sku: SKU, days: number) => string> = {
+  acceleration:      (_s, d) => `Strong demand is drawing down stock — only ${d} days of cover left.`,
+  stabilization:     (_s, d) => `Velocity is flat with ${d} days of cover; momentum is at risk of slipping.`,
+  erosion:           (_s) => `Both demand and margin are declining on this product.`,
+  risk_monetization: (s) => `$${(s.stockLevel * s.unitCost).toLocaleString()} is tied up in slow-moving stock.`,
+  leakage:           (s) => `Return rate of ${(s.returnRate * 100).toFixed(0)}% is eroding profit on every sale.`,
+  end_of_life:       (s) => `Product is ${s.ageDays} days old with near-zero velocity.`,
+};
+
+function buildCurrentState(sku: SKU, days: number): string {
+  return `${sku.stockLevel} on hand${sku.inTransit ? ` + ${sku.inTransit} in transit` : ''}, selling ${sku.dailySales.toFixed(1)}/day → ${days} days of cover at ${(sku.margin * 100).toFixed(0)}% margin.`;
+}
+
+function buildConstraints(sku: SKU, bucket: BucketType): string[] {
+  const c = [
+    `Supplier lead time: ${sku.leadTimeDays} days`,
+    `Order cost: $${sku.orderCost} per PO (EOQ-optimized)`,
+    `Target service level: 95%`,
+  ];
+  if (bucket === 'acceleration') c.push(`Reorder sized to economic order quantity, not raw demand`);
+  if (bucket === 'risk_monetization' || bucket === 'end_of_life') c.push(`Recovery capped at realistic resale value`);
+  return c;
+}
+
+function buildAlternatives(_sku: SKU, bucket: BucketType): { label: string; tradeoff: string }[] {
+  switch (bucket) {
+    case 'acceleration':
+      return [
+        { label: 'Order a smaller quantity now', tradeoff: 'Lower cash outlay, but higher stockout risk and more frequent POs.' },
+        { label: 'Wait one cycle', tradeoff: 'Frees cash short-term, but likely a stockout on a top seller.' },
+      ];
+    case 'stabilization':
+      return [
+        { label: 'Do nothing', tradeoff: 'No spend, but velocity may keep drifting down.' },
+        { label: 'Run a markdown', tradeoff: 'Moves units faster, at the cost of margin.' },
+      ];
+    case 'erosion':
+      return [
+        { label: 'Hold and monitor', tradeoff: 'Avoids markdown now, risks deeper markdown later.' },
+        { label: 'Bundle with a winner', tradeoff: 'Preserves price, but ties up a strong SKU.' },
+      ];
+    case 'risk_monetization':
+      return [
+        { label: 'Discount gradually', tradeoff: 'Protects more margin, but cash stays trapped longer.' },
+        { label: 'Hold for seasonal lift', tradeoff: 'Possible full-price sale, but carries real holding cost.' },
+      ];
+    case 'leakage':
+      return [
+        { label: 'Keep selling as-is', tradeoff: 'No disruption, but returns keep eroding margin.' },
+        { label: 'Pull the listing', tradeoff: 'Stops the leak, but forgoes the revenue entirely.' },
+      ];
+    case 'end_of_life':
+      return [
+        { label: 'Liquidate in bulk', tradeoff: 'Fast clearance, lowest recovery per unit.' },
+        { label: 'Donate / write off', tradeoff: 'Clears space and may offer a tax benefit.' },
+      ];
+    default:
+      return [];
+  }
+}
+
 function buildExpectedImpact(sku: SKU, bucket: BucketType, _days: number): string {
   const rq = calcReorderQty(sku);
   switch (bucket) {
@@ -258,12 +328,30 @@ export function generateDecisionFeed(skus: SKU[]): DailyDecision[] {
         capitalAtRisk: s.capitalAtRisk,
         dismissed: false,
         favorited: false,
-        // Structured Decision Object — the explainability standard
+        // Structured Decision Object — the explainability standard (§5.2 / §6 / §9)
+        decisionId: `DEC-${s.id}`.toUpperCase(),
+        entity: `${s.name}${s.variant ? ` · ${s.variant}` : ''}`,
+        location: 'Primary warehouse',
+        objective: BUCKET_OBJECTIVE[bucket],
+        currentState: buildCurrentState(s, days),
+        problem: BUCKET_PROBLEM[bucket](s, days),
         recommendation: buildRecommendation(s, bucket, days),
         whyNow: buildWhyNow(s, bucket, days),
         evidence: buildEvidence(s, bucket, days, velocityRatio),
+        constraints: buildConstraints(s, bucket),
+        alternatives: buildAlternatives(s, bucket),
         riskIfIgnored: buildRiskIfIgnored(s, bucket, days),
         expectedImpact: buildExpectedImpact(s, bucket, days),
+        executionStatus: 'recommended',
+        simInputs: {
+          dailySales: s.dailySales,
+          stockLevel: s.stockLevel,
+          inTransit: s.inTransit,
+          leadTimeDays: s.leadTimeDays,
+          unitCost: s.unitCost,
+          sellingPrice: s.sellingPrice,
+          reorderQty: s.reorderQty ?? calcReorderQty(s),
+        },
       };
     });
 }

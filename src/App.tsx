@@ -11,6 +11,7 @@ import SKUPerformance from './components/SKUPerformance';
 import Footprint from './components/Footprint';
 import Favorites from './components/Favorites';
 import Scaling from './components/Scaling';
+import Integrations from './components/Integrations';
 import ToastContainer from './components/Toast';
 import VentoryLogo from './components/VentoryLogo';
 import { useAuth } from './hooks/useAuth';
@@ -49,6 +50,7 @@ export default function App() {
   const [showLanding, setShowLanding] = useState(
     () => !sessionGet('ventory_entered')
   );
+  const [showIntegrations, setShowIntegrations] = useState(false);
 
   function enterApp() {
     sessionSet('ventory_entered', '1');
@@ -206,6 +208,7 @@ export default function App() {
         urgentCount={liveUrgentCount}
         onReset={clearAll}
         onShowLanding={() => setShowLanding(true)}
+        onShowIntegrations={() => setShowIntegrations(true)}
         onLogout={handleLogout}
         brandName={brandName}
       >
@@ -226,6 +229,14 @@ export default function App() {
           {activeTab === 'scaling' && <Scaling skus={enrichedSKUs} summary={summary} />}
         </AnimatedTab>
       </Layout>
+
+      {showIntegrations && (
+        <Integrations
+          summary={summary}
+          dataSource={dataSource}
+          onClose={() => setShowIntegrations(false)}
+        />
+      )}
     </>
   );
 }

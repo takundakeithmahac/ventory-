@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import type { DailyDecision, PortfolioSummary } from '../types';
+import DecisionDetail from './DecisionDetail';
 
 interface Props {
   decisions: DailyDecision[];
@@ -75,11 +76,12 @@ function getGreeting(brandName: string) {
 }
 
 function DecisionCard({
-  decision, onFavorite, onDismiss, index,
+  decision, onFavorite, onDismiss, onOpenDetail, index,
 }: {
   decision: DailyDecision;
   onFavorite: (id: string) => void;
   onDismiss: (id: string) => void;
+  onOpenDetail: (d: DailyDecision) => void;
   index: number;
 }) {
   const cfg = URGENCY_CONFIG[decision.urgency];
@@ -246,6 +248,15 @@ function DecisionCard({
               <span className="text-[10px] text-slate-400 font-semibold">{decision.confidence}%</span>
             </div>
 
+            {/* View full details — opens the structured Decision Object + simulation */}
+            <button
+              onClick={(e) => { e.stopPropagation(); onOpenDetail(decision); }}
+              className="w-full text-xs py-2.5 rounded-xl bg-slate-800/70 text-slate-300 hover:bg-slate-700 font-semibold transition-all active:scale-[0.97] flex items-center justify-center gap-1.5"
+            >
+              View full details & simulate
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+
             {/* Approve / Reject — human-in-the-loop */}
             <div className="flex gap-2 pt-0.5">
               <button
@@ -274,6 +285,7 @@ function DecisionCard({
 
 export default function RecommendedFeed({ decisions, summary, onFavorite, onDismiss, urgentCount, brandName }: Props) {
   const greeting = getGreeting(brandName);
+  const [detail, setDetail] = useState<DailyDecision | null>(null);
 
   return (
     <div className="px-4 pt-5 pb-2">
@@ -338,11 +350,23 @@ export default function RecommendedFeed({ decisions, summary, onFavorite, onDism
               decision={d}
               onFavorite={onFavorite}
               onDismiss={onDismiss}
+              onOpenDetail={setDetail}
               index={i}
             />
           ))
         )}
       </div>
+
+      {/* Full structured Decision Object + simulation */}
+      {detail && (
+        <DecisionDetail
+          decision={detail}
+          approved={decisions.find((d) => d.id === detail.id)?.favorited ?? false}
+          onClose={() => setDetail(null)}
+          onApprove={onFavorite}
+          onDismiss={onDismiss}
+        />
+      )}
 
       {decisions.length > 0 && (
         <p className="text-center text-[10px] text-slate-700 mt-6 mb-2">

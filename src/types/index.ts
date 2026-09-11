@@ -54,6 +54,24 @@ export interface SKU {
   reorderDeadline?: string;
 }
 
+export type ExecutionStatus = 'recommended' | 'approved' | 'dismissed';
+
+export interface DecisionAlternative {
+  label: string;      // the alternative action
+  tradeoff: string;   // why you might pick it / what you give up
+}
+
+// Raw signals carried on the decision so the detail view can run what-if simulations
+export interface SimInputs {
+  dailySales: number;
+  stockLevel: number;
+  inTransit: number;
+  leadTimeDays: number;
+  unitCost: number;
+  sellingPrice: number;
+  reorderQty: number;
+}
+
 export interface DailyDecision {
   id: string;
   skuId: string;
@@ -71,13 +89,23 @@ export interface DailyDecision {
   capitalAtRisk?: number;
   dismissed?: boolean;
   favorited?: boolean;
-  // ── Structured Decision Object: the explainability standard ──
+  // ── Structured Decision Object (spec §5.2 / §6 / §9) ──
   // Makes the leap from input (the merchant's data) to output (this action) transparent.
+  decisionId: string;       // Stable id for auditability & outcome learning
+  entity: string;           // The entity affected (a product in the MVP)
+  location: string;         // Where the decision applies
+  objective: string;        // What the business is optimizing
+  currentState: string;     // Relevant facts at decision time
+  problem: string;          // The problem or opportunity
   recommendation: string;   // What should I do — the concrete action
   whyNow: string;           // Why this deserves attention right now
   evidence: string[];       // The signals from the merchant's own data that drove it
+  constraints: string[];    // Budget, MOQ, lead time, service level, policy considered
+  alternatives: DecisionAlternative[]; // Other viable actions + their trade-offs
   riskIfIgnored: string;    // What happens if I do nothing
   expectedImpact: string;   // The expected financial / operational outcome
+  executionStatus: ExecutionStatus;    // recommended → approved / dismissed
+  simInputs: SimInputs;     // Raw numbers for the simulation what-ifs
 }
 
 export interface PortfolioSummary {

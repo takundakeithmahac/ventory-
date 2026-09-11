@@ -9,6 +9,7 @@ interface Props {
   children: ReactNode;
   onReset: () => void;
   onShowLanding: () => void;
+  onShowIntegrations: () => void;
   onLogout: () => void;
   brandName: string;
 }
@@ -80,7 +81,7 @@ const TABS: { id: TabId; label: string; Icon: React.FC<{ active: boolean }> }[] 
   { id: 'scaling',     label: 'Opportunities', Icon: IconScaling },
 ];
 
-export default function Layout({ activeTab, setActiveTab, urgentCount, children, onReset, onShowLanding, onLogout, brandName }: Props) {
+export default function Layout({ activeTab, setActiveTab, urgentCount, children, onReset, onShowLanding, onShowIntegrations, onLogout, brandName }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -132,6 +133,16 @@ export default function Layout({ activeTab, setActiveTab, urgentCount, children,
                   <path d="M7 1L1 5.5V13h4V9h4v4h4V5.5L7 1z" stroke="#94a3b8" strokeWidth="1.3" strokeLinejoin="round" />
                 </svg>
                 Home
+              </button>
+              <button
+                onClick={() => { setMenuOpen(false); onShowIntegrations(); }}
+                className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-slate-300 hover:bg-slate-800/60 transition-colors text-left"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <rect x="1.5" y="2" width="11" height="8" rx="1.3" stroke="#94a3b8" strokeWidth="1.3" />
+                  <path d="M4 12h6M7 10v2" stroke="#94a3b8" strokeWidth="1.3" strokeLinecap="round" />
+                </svg>
+                Integrations
               </button>
               <button
                 onClick={() => { setMenuOpen(false); onReset(); }}
