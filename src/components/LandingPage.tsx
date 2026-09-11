@@ -368,7 +368,7 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
           <div className="flex-1 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 bg-[#1a56db]/10 border border-[#1a56db]/25 rounded-full px-3.5 py-1.5 mb-6">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot" />
-              <span className="text-xs text-slate-300 font-medium">The Decision Engine for Inventory</span>
+              <span className="text-xs text-slate-300 font-medium">Understand · Decide · Act</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight mb-6">
@@ -380,8 +380,9 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
             </h1>
 
             <p className="text-slate-400 text-lg leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0">
-              Ventory classifies every SKU into one of 6 action buckets and surfaces a daily to-do list of
-              exactly what to reorder, boost, liquidate, or retire — no spreadsheets needed.
+              Connect your store and Ventory reads your sales, stock, and margins — then hands you a
+              ranked list of <span className="text-slate-200 font-medium">exactly what to do next, and why</span>.
+              No dashboards to dig through.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start mb-10">
@@ -419,6 +420,84 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
         </div>
       </section>
 
+      {/* ── Input → Output (the core promise, made unmistakable) ── */}
+      <section id="input-output" className="py-20 px-5 relative overflow-hidden border-y border-slate-800/40">
+        <div className="max-w-5xl mx-auto">
+          <Section>
+            <div className="text-center mb-12">
+              <p className="text-xs text-[#1a56db] uppercase tracking-[0.2em] font-bold mb-3">The Simple Idea</p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-white">You give Ventory your data.<br />It gives you back decisions.</h2>
+            </div>
+          </Section>
+
+          <div className="grid md:grid-cols-[1fr_auto_1fr] gap-5 md:gap-4 items-stretch">
+            {/* INPUT */}
+            <Section className="bg-[#0f172a] border border-slate-800 rounded-3xl p-7">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.18em] bg-slate-800/70 px-2.5 py-1 rounded-full">You put in</span>
+              </div>
+              <h3 className="text-white font-bold text-lg mb-4">Your store data</h3>
+              <div className="flex flex-col gap-2.5">
+                {[
+                  'Products & variants',
+                  'Orders & sales history',
+                  'Stock on hand + in transit',
+                  'Costs, prices & margins',
+                ].map((t) => (
+                  <div key={t} className="flex items-center gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-slate-800 flex items-center justify-center shrink-0">
+                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9 10 3" stroke="#64748b" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                    <span className="text-sm text-slate-300">{t}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-slate-500 mt-5 leading-relaxed">
+                Connect Shopify or drop in a CSV. Takes under 60 seconds.
+              </p>
+            </Section>
+
+            {/* ARROW / ENGINE */}
+            <Section className="flex md:flex-col items-center justify-center gap-3 py-2">
+              <div className="w-14 h-14 rounded-2xl bg-[#1a56db] flex items-center justify-center shadow-xl shadow-blue-900/40 shrink-0">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 12h16M13 6l7 6-7 6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <span className="text-[10px] text-slate-500 uppercase tracking-[0.15em] font-semibold text-center md:writing-normal whitespace-nowrap">
+                Ventory engine
+              </span>
+            </Section>
+
+            {/* OUTPUT */}
+            <Section className="bg-gradient-to-br from-[#0d1c3a] to-[#0f172a] border border-[#1a56db]/25 rounded-3xl p-7">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-[10px] font-bold text-blue-300 uppercase tracking-[0.18em] bg-[#1a56db]/20 px-2.5 py-1 rounded-full">You get back</span>
+              </div>
+              <h3 className="text-white font-bold text-lg mb-4">A ranked list of decisions</h3>
+              <div className="flex flex-col gap-2.5">
+                {[
+                  'What to do — the exact action',
+                  'Why now — grounded in your numbers',
+                  'What happens if you ignore it',
+                  'Expected impact + confidence',
+                ].map((t) => (
+                  <div key={t} className="flex items-center gap-2.5">
+                    <div className="w-5 h-5 rounded-md bg-[#1a56db]/20 flex items-center justify-center shrink-0">
+                      <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M2 6.5L4.5 9 10 3" stroke="#3b82f6" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                    <span className="text-sm text-slate-200">{t}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-xs text-slate-400 mt-5 leading-relaxed">
+                Approve, modify, or dismiss — you stay in control.
+              </p>
+            </Section>
+          </div>
+        </div>
+      </section>
+
       {/* ── How it works ── */}
       <section id="how-it-works" className="py-20 px-5">
         <div className="max-w-4xl mx-auto">
@@ -452,8 +531,8 @@ export default function LandingPage({ onGetStarted, isPreview = false }: Props) 
                 n: '03', icon: (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="#3b82f6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/><path d="M20.618 5.984A11 11 0 1 1 4.017 12.354" stroke="#3b82f6" strokeWidth="1.8" strokeLinecap="round"/></svg>
                 ),
-                title: 'Take action in one swipe',
-                desc: 'Daily decision feed shows you exactly what to do. Swipe to dismiss, tap to save — like a to-do list for your inventory.',
+                title: 'Decide with the full reasoning',
+                desc: 'Each decision shows what to do, why now, the signals behind it, and the impact. Approve, modify, or dismiss — you stay in control.',
               },
             ].map((step) => (
               <Section key={step.n} className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 relative">

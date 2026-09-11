@@ -112,6 +112,79 @@ const BUCKET_HEADLINE: Record<BucketType, (sku: SKU, days: number) => string> = 
   end_of_life: (s) => `${s.ageDays}d old — end-of-life recovery`,
 };
 
+// ── Structured Decision Object builders (the Explainability Standard) ────────
+// Each returns the plain-language answer to: What? Why now? Evidence? If ignored? Impact?
+function buildRecommendation(sku: SKU, bucket: BucketType, _days: number): string {
+  switch (bucket) {
+    case 'acceleration':      return `Place a purchase order for ${calcReorderQty(sku)} units before ${reorderDeadline(sku)}.`;
+    case 'stabilization':     return `Hold current stock and consider a small ad or placement boost to lift velocity.`;
+    case 'erosion':           return `Run a markdown or bundle to clear stock while margin still holds.`;
+    case 'risk_monetization': return `Open a liquidation channel now to recover trapped cash.`;
+    case 'leakage':           return `Flag this product for QC / listing review before reordering.`;
+    case 'end_of_life':       return `Retire this product — clearance or vendor close-out.`;
+    default:                  return `No action needed right now.`;
+  }
+}
+
+function buildWhyNow(sku: SKU, bucket: BucketType, days: number): string {
+  switch (bucket) {
+    case 'acceleration':      return `Only ${days} days of stock left and lead time is ${sku.leadTimeDays} days — ordering later risks a stockout.`;
+    case 'stabilization':     return `Velocity is steady with ${days} days of cover — a nudge now protects momentum.`;
+    case 'erosion':           return `Demand and margin are both sliding — acting now avoids a forced markdown later.`;
+    case 'risk_monetization': return `Cash is sitting idle in slow stock — every week ties it up longer.`;
+    case 'leakage':           return `Returns are above threshold and repeat with each order — fix before restocking.`;
+    case 'end_of_life':       return `Velocity is near zero and carrying cost keeps compounding.`;
+    default:                  return `Nothing time-sensitive detected.`;
+  }
+}
+
+function buildEvidence(sku: SKU, bucket: BucketType, days: number, velocityRatio: number): string[] {
+  const trend = sku.salesTrend >= 0 ? `+${(sku.salesTrend * 100).toFixed(0)}%` : `${(sku.salesTrend * 100).toFixed(0)}%`;
+  const base = [
+    `Sells ${sku.dailySales.toFixed(1)} units/day (trend ${trend})`,
+    `${sku.stockLevel} in stock${sku.inTransit ? ` · ${sku.inTransit} in transit` : ''} → ${days}d of cover`,
+    `${(sku.margin * 100).toFixed(0)}% margin · ${sku.leadTimeDays}d supplier lead time`,
+  ];
+  switch (bucket) {
+    case 'risk_monetization':
+    case 'end_of_life':
+      base.push(`$${(sku.stockLevel * sku.unitCost).toLocaleString()} of capital held in this product`);
+      break;
+    case 'leakage':
+      base.push(`${(sku.returnRate * 100).toFixed(0)}% return rate (above 12% threshold)`);
+      break;
+    case 'acceleration':
+      base.push(`Selling ${velocityRatio.toFixed(1)}× the catalog average`);
+      break;
+  }
+  return base;
+}
+
+function buildRiskIfIgnored(sku: SKU, bucket: BucketType, days: number): string {
+  switch (bucket) {
+    case 'acceleration':      return `Stockout in ~${days} days — lost sales and momentum on a top performer.`;
+    case 'stabilization':     return `Velocity may keep drifting toward erosion.`;
+    case 'erosion':           return `Deeper markdowns and thinner margin the longer it sits.`;
+    case 'risk_monetization': return `$${(sku.stockLevel * sku.unitCost).toLocaleString()} stays locked up and value keeps decaying.`;
+    case 'leakage':           return `Return costs and refunds keep eroding profit on every unit sold.`;
+    case 'end_of_life':       return `Storage and handling costs accumulate on dead stock.`;
+    default:                  return `No material downside.`;
+  }
+}
+
+function buildExpectedImpact(sku: SKU, bucket: BucketType, _days: number): string {
+  const rq = calcReorderQty(sku);
+  switch (bucket) {
+    case 'acceleration':      return `Protects ~$${(rq * sku.sellingPrice / 1000).toFixed(1)}K of at-risk revenue over the next cycle.`;
+    case 'stabilization':     return `Small boost can lift units 5–15% with little downside.`;
+    case 'erosion':           return `Recovers $${((sku.stockLevel * sku.sellingPrice * 0.4) / 1000).toFixed(1)}K vs. a later forced markdown.`;
+    case 'risk_monetization': return `Frees ~$${((sku.stockLevel * sku.unitCost * 0.65) / 1000).toFixed(1)}K in cash to redeploy.`;
+    case 'leakage':           return `Cutting returns lifts realized margin on every future sale.`;
+    case 'end_of_life':       return `Removes carrying cost and clears shelf space for winners.`;
+    default:                  return `Neutral.`;
+  }
+}
+
 // ── Main Engine: enrich a list of SKUs ────────────────────────────────────
 export function runDecisionEngine(skus: SKU[]): SKU[] {
   const avgDailySales =
@@ -150,6 +223,9 @@ export function runDecisionEngine(skus: SKU[]): SKU[] {
 
 // ── Generate Daily Decision Feed ──────────────────────────────────────────
 export function generateDecisionFeed(skus: SKU[]): DailyDecision[] {
+  const avgDailySales =
+    skus.reduce((sum, s) => sum + s.dailySales, 0) / Math.max(skus.length, 1);
+
   return skus
     .filter((s) => s.bucket !== undefined)
     .sort((a, b) => {
@@ -163,6 +239,8 @@ export function generateDecisionFeed(skus: SKU[]): DailyDecision[] {
     })
     .map((s) => {
       const days = s.daysOfStock ?? 0;
+      const bucket = s.bucket!;
+      const velocityRatio = avgDailySales > 0 ? s.dailySales / avgDailySales : 0;
       return {
         id: `decision-${s.id}`,
         skuId: s.id,
@@ -171,8 +249,8 @@ export function generateDecisionFeed(skus: SKU[]): DailyDecision[] {
         category: s.category,
         urgency: s.urgency!,
         action: s.action!,
-        bucket: s.bucket!,
-        headline: BUCKET_HEADLINE[s.bucket!](s, days),
+        bucket,
+        headline: BUCKET_HEADLINE[bucket](s, days),
         subline: `${s.sku} · ${s.variant ?? s.category}`,
         confidence: s.confidence!,
         reorderQty: s.reorderQty,
@@ -180,6 +258,12 @@ export function generateDecisionFeed(skus: SKU[]): DailyDecision[] {
         capitalAtRisk: s.capitalAtRisk,
         dismissed: false,
         favorited: false,
+        // Structured Decision Object — the explainability standard
+        recommendation: buildRecommendation(s, bucket, days),
+        whyNow: buildWhyNow(s, bucket, days),
+        evidence: buildEvidence(s, bucket, days, velocityRatio),
+        riskIfIgnored: buildRiskIfIgnored(s, bucket, days),
+        expectedImpact: buildExpectedImpact(s, bucket, days),
       };
     });
 }

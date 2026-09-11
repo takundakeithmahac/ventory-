@@ -71,6 +71,13 @@ export interface DailyDecision {
   capitalAtRisk?: number;
   dismissed?: boolean;
   favorited?: boolean;
+  // ── Structured Decision Object: the explainability standard ──
+  // Makes the leap from input (the merchant's data) to output (this action) transparent.
+  recommendation: string;   // What should I do — the concrete action
+  whyNow: string;           // Why this deserves attention right now
+  evidence: string[];       // The signals from the merchant's own data that drove it
+  riskIfIgnored: string;    // What happens if I do nothing
+  expectedImpact: string;   // The expected financial / operational outcome
 }
 
 export interface PortfolioSummary {

@@ -194,31 +194,69 @@ function DecisionCard({
           </div>
         </div>
 
-        {/* Expanded panel — smooth height */}
+        {/* Expanded panel — the structured Decision Object */}
         <div
           className="overflow-hidden transition-all duration-300 ease-in-out"
-          style={{ maxHeight: expanded ? '200px' : '0px' }}
+          style={{ maxHeight: expanded ? '620px' : '0px' }}
         >
-          <div className="px-4 pb-4 border-t border-slate-800/60">
-            <p className="text-xs text-slate-400 pt-3 leading-relaxed">
-              {decision.action === 'reorder' && decision.reorderQty && (
-                <span className="block mb-1.5 font-semibold text-[#1a56db]">
-                  Reorder {decision.reorderQty} units · Due {decision.deadline}
-                </span>
-              )}
-              {ACTION_LABEL[decision.action] ?? decision.action} recommendation with {decision.confidence}% confidence
-              based on sales velocity, margin profile, and lead time analysis.
-            </p>
-            <div className="flex gap-2 mt-3">
+          <div className="px-4 pb-4 border-t border-slate-800/60 pt-3 space-y-3">
+            {/* Do this */}
+            <div>
+              <p className="text-[10px] font-bold text-[#3b82f6] uppercase tracking-widest mb-1">Do this</p>
+              <p className="text-sm text-white leading-snug font-medium">{decision.recommendation}</p>
+            </div>
+
+            {/* Why now */}
+            <div>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Why now</p>
+              <p className="text-xs text-slate-300 leading-relaxed">{decision.whyNow}</p>
+            </div>
+
+            {/* Evidence — the input signals from their own data */}
+            <div>
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">From your data</p>
+              <div className="flex flex-col gap-1">
+                {decision.evidence.map((e, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <span className="mt-1 w-1 h-1 rounded-full bg-slate-600 shrink-0" />
+                    <span className="text-xs text-slate-400 leading-relaxed">{e}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Impact + Risk side by side */}
+            <div className="grid grid-cols-1 gap-2">
+              <div className="bg-emerald-500/8 border border-emerald-500/15 rounded-xl px-3 py-2">
+                <p className="text-[10px] font-bold text-emerald-400/80 uppercase tracking-wide mb-0.5">Expected impact</p>
+                <p className="text-xs text-slate-300 leading-relaxed">{decision.expectedImpact}</p>
+              </div>
+              <div className="bg-red-500/8 border border-red-500/15 rounded-xl px-3 py-2">
+                <p className="text-[10px] font-bold text-red-400/80 uppercase tracking-wide mb-0.5">If you ignore it</p>
+                <p className="text-xs text-slate-300 leading-relaxed">{decision.riskIfIgnored}</p>
+              </div>
+            </div>
+
+            {/* Confidence */}
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-slate-500 uppercase tracking-wide">Confidence</span>
+              <div className="flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                <div className="h-full bg-[#1a56db] rounded-full" style={{ width: `${decision.confidence}%` }} />
+              </div>
+              <span className="text-[10px] text-slate-400 font-semibold">{decision.confidence}%</span>
+            </div>
+
+            {/* Approve / Reject — human-in-the-loop */}
+            <div className="flex gap-2 pt-0.5">
               <button
                 onClick={(e) => { e.stopPropagation(); onFavorite(decision.id); }}
                 className={`flex-1 text-xs py-2.5 rounded-xl font-semibold transition-all active:scale-[0.97] ${
                   decision.favorited
                     ? 'bg-[#1a56db] text-white'
-                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                    : 'bg-[#1a56db]/90 text-white hover:bg-[#1a56db]'
                 }`}
               >
-                {decision.favorited ? '★ Saved' : '☆ Save'}
+                {decision.favorited ? '★ Approved' : 'Approve →'}
               </button>
               <button
                 onClick={(e) => { e.stopPropagation(); onDismiss(decision.id); }}
@@ -273,7 +311,7 @@ export default function RecommendedFeed({ decisions, summary, onFavorite, onDism
         <div className="flex items-center gap-2 mb-4">
           <div className="flex-1 h-px bg-slate-800" />
           <span className="text-[10px] text-slate-700 flex items-center gap-1">
-            <span>←</span> swipe to dismiss · save <span>→</span>
+            <span>←</span> dismiss · tap for the reasoning · approve <span>→</span>
           </span>
           <div className="flex-1 h-px bg-slate-800" />
         </div>
@@ -308,7 +346,7 @@ export default function RecommendedFeed({ decisions, summary, onFavorite, onDism
 
       {decisions.length > 0 && (
         <p className="text-center text-[10px] text-slate-700 mt-6 mb-2">
-          Swipe left to dismiss · Tap to expand · Swipe right to save
+          Tap any card to see exactly why Ventory recommends it
         </p>
       )}
     </div>

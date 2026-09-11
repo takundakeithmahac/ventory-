@@ -194,7 +194,7 @@ export default function App() {
   if (!dataSource) return <><Onboarding onData={handleData} /><ToastContainer /></>;
 
   const brandName = dataSource === 'csv'
-    ? (user.email?.split('@')[0] ?? 'Your Store')
+    ? (user?.email?.split('@')[0] ?? 'Your Store')
     : 'Demo Store';
 
   return (

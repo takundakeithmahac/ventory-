@@ -71,12 +71,13 @@ function IconScaling({ active }: { active: boolean }) {
   );
 }
 
+// Decision-layer vocabulary (kept short + plain so merchants read them instantly)
 const TABS: { id: TabId; label: string; Icon: React.FC<{ active: boolean }> }[] = [
-  { id: 'recommended', label: 'Feed',      Icon: IconFeed },
-  { id: 'footprint',   label: 'Footprint', Icon: IconFootprint },
-  { id: 'skuperf',     label: 'SKUs',      Icon: IconChart },
-  { id: 'favorites',   label: 'Saved',     Icon: IconStar },
-  { id: 'scaling',     label: 'Scaling',   Icon: IconScaling },
+  { id: 'recommended', label: 'Decisions',     Icon: IconFeed },
+  { id: 'footprint',   label: 'Network',       Icon: IconFootprint },
+  { id: 'skuperf',     label: 'Products',      Icon: IconChart },
+  { id: 'favorites',   label: 'Watchlist',     Icon: IconStar },
+  { id: 'scaling',     label: 'Opportunities', Icon: IconScaling },
 ];
 
 export default function Layout({ activeTab, setActiveTab, urgentCount, children, onReset, onShowLanding, onLogout, brandName }: Props) {
